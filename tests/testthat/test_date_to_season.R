@@ -13,9 +13,19 @@ test_that("Before season start gives the next year", {
 })
 
 test_that("First date of season gives that calendar year", {
-  expect_equal(date_to_season(ISOdate(2020, 7, 1), start_month = 7, start_day = 1), 2020)
+  expect_equal(
+    date_to_season(ISOdate(2020, 7, 1), start_month = 7, start_day = 1),
+    2020
+  )
 })
 
 test_that("Vectorized date to season", {
-  expect_equal(date_to_season(ISOdate(2020, c(6, 7, 8), 1), start_month = 7, start_day = 1), c(2019, 2020, 2020))
+  expect_equal(
+    date_to_season(
+      ISOdate(2020, c(6, 7, 8), 1),
+      start_month = 7,
+      start_day = 1
+    ),
+    c(2019, 2020, 2020)
+  )
 })

@@ -14,12 +14,25 @@ align_weeks <- function(
   )
 
   # each season has a reference date
-  ref_dates <- get_ref_date(seasons, start_day = season_start_day, start_month = season_start_month)
-  target_ref_date <- get_ref_date(target_season, start_day = season_start_day, start_month = season_start_month)
+  ref_dates <- get_ref_date(
+    seasons,
+    start_day = season_start_day, start_month = season_start_month
+  )
+  target_ref_date <- get_ref_date(
+    target_season,
+    start_day = season_start_day,
+    start_month = season_start_month
+  )
 
   # each season's reference date corresponds to a reference week date
-  ref_week_dates <- lubridate::ceiling_date(ref_dates, unit = "weeks", week_start = week_day)
-  target_ref_week_date <- lubridate::ceiling_date(target_ref_date, unit = "weeks", week_start = week_day)
+  ref_week_dates <- lubridate::ceiling_date(
+    ref_dates,
+    unit = "weeks", week_start = week_day
+  )
+  target_ref_week_date <- lubridate::ceiling_date(
+    target_ref_date,
+    unit = "weeks", week_start = week_day
+  )
 
   # optimal number of weeks to offset each season
   offset_days <- (target_ref_week_date - ref_week_dates) / lubridate::ddays(1)
@@ -30,7 +43,10 @@ align_weeks <- function(
 }
 
 date_to_season <- function(x, start_month, start_day) {
-  before_season_start <- lubridate::month(x) < start_month | ((lubridate::month(x) == start_month) & (lubridate::day(x) < start_day))
+  before_season_start <- (
+    lubridate::month(x) < start_month |
+      ((lubridate::month(x) == start_month) & (lubridate::day(x) < start_day))
+  )
   # if before season start, then you belong to the season
   # starting in the previous calendar year. this logic
   # relies on casting FALSE->0 and TRUE->1
