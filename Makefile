@@ -8,3 +8,6 @@ docs:
 
 check:
 	$(RE) "devtools::check()"
+
+build:
+	$(RE) "devtools::build()"

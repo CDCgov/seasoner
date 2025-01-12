@@ -3,13 +3,14 @@ Title: Align weeks between seasons
 Version: 0.0.0.9000
 Authors@R:
     person("Scott", "Olesen", email = "ulp7@cdc.gov", role = c("cre", "aut"))
-Description: Align weeks between seasons
+Description: Align weeks between seasons.
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
     lubridate,
+    methods,
     rlang
 Suggests:
     knitr,

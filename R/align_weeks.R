@@ -1,5 +1,12 @@
 #' Align weeks across seasons
 #'
+#' @param x vector of input dates
+#' @param target_season integer season to align to (first year of two-year
+#'   season)
+#' @param ref_month integer month of the reference date (1=January)
+#' @param ref_day integer day of the reference date
+#' @param season_start_month integer month of the season start (1=January)
+#' @param season_start_day integer day of the season start
 #' @param week_day integer day of the week to align to (1=Monday)
 #'
 #' @return vector of dates, of same length as `x`

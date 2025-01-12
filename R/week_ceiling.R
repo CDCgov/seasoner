@@ -9,7 +9,7 @@
 #'
 #' @return vector of dates, of same length as `x`
 week_ceiling <- function(x, week_day = 6) {
-  if (!is(x, "Date")) {
+  if (!methods::is(x, "Date")) {
     stop("`x` must be a Date object")
   }
   lubridate::ceiling_date(
