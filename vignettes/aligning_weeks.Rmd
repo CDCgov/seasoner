@@ -15,25 +15,28 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(lubridate)
 library(seasoner)
 ```
 
 ```{r}
+# make a sequence of Saturdays, from 2010/2011 to 2019/2020 seasons
 input_start <- as.Date("2010-08-07")
 input_end <- as.Date("2020-06-27")
-stopifnot(all(wday(c(input_start, input_end), label = TRUE) == "Sat"))
+stopifnot(all(
+  lubridate::wday(c(input_start, input_end), label = TRUE) == "Sat"
+))
 input_dates <- seq(from = input_start, to = input_end, by = "week")
 input_seasons <- date_to_season(input_dates)
+
+# map all of those onto the 2020/2021 season
 aligned_dates <- align_weeks(input_dates, target_season = 2020)
 
-data <- data.frame(
+# show the mapping
+data.frame(
   input_date = input_dates,
   input_season = input_seasons,
   aligned_date = aligned_dates
-)
-
-data |>
+) |>
   tidyr::pivot_wider(names_from = input_season, values_from = input_date) |>
   knitr::kable()
 ```
