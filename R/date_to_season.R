@@ -12,7 +12,9 @@
 #' @param start_day integer day of the season start
 #'
 #' @return integer seasons (indicating first year of two-year season)
-date_to_season <- function(x, start_month, start_day) {
+#'
+#' @export
+date_to_season <- function(x, start_month = 7, start_day = 1) {
   validate_lengths(x, start_month, start_day)
 
   before_season_start <- (

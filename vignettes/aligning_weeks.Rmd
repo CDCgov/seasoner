@@ -20,10 +20,20 @@ library(seasoner)
 ```
 
 ```{r}
-x_start <- as.Date("1999-08-07")
-stopifnot(wday(x_start, label = TRUE) == "Sat")
-x <- seq(x_start, length = 500, by = "week")
-y <- align_weeks(x, target_season = 2020)
+input_start <- as.Date("2010-08-07")
+input_end <- as.Date("2020-06-27")
+stopifnot(all(wday(c(input_start, input_end), label = TRUE) == "Sat"))
+input_dates <- seq(from = input_start, to = input_end, by = "week")
+input_seasons <- date_to_season(input_dates)
+aligned_dates <- align_weeks(input_dates, target_season = 2020)
 
-data.frame(x = x, y = y)
+data <- data.frame(
+  input_date = input_dates,
+  input_season = input_seasons,
+  aligned_date = aligned_dates
+)
+
+data |>
+  tidyr::pivot_wider(names_from = input_season, values_from = input_date) |>
+  knitr::kable()
 ```
