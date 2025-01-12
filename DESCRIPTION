@@ -1,8 +1,8 @@
 Package: seasoner
 Title: Align weeks between seasons
 Version: 0.0.0.9000
-Authors@R:
-    person("Scott", "Olesen", , "ulp7@cdc.gov", role = c("aut", "cre"))
+Author: person("Scott", "Olesen", , "ulp7@cdc.gov")
+Maintainer: person("Scott", "Olesen", , "ulp7@cdc.gov")
 Description: Align weeks between seasons
 License: Apache License (>= 2)
 Encoding: UTF-8
