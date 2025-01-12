@@ -5,3 +5,6 @@ test:
 
 docs:
 	$(RE) "devtools::document()"
+
+check:
+	$(RE) "devtools::check()"

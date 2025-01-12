@@ -1,8 +1,8 @@
 Package: seasoner
 Title: Align weeks between seasons
 Version: 0.0.0.9000
-Author: person("Scott", "Olesen", , "ulp7@cdc.gov")
-Maintainer: person("Scott", "Olesen", , "ulp7@cdc.gov")
+Authors@R:
+    person("Scott", "Olesen", email = "ulp7@cdc.gov", role = c("cre", "aut"))
 Description: Align weeks between seasons
 License: Apache License (>= 2)
 Encoding: UTF-8
@@ -12,5 +12,8 @@ Imports:
     lubridate,
     rlang
 Suggests:
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+VignetteBuilder: knitr
