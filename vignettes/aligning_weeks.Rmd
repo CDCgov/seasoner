@@ -1,0 +1,39 @@
+---
+title: "Aligning weeks"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Aligning weeks}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(lubridate)
+library(seasoner)
+```
+
+```{r}
+input_start <- as.Date("2010-08-07")
+input_end <- as.Date("2020-06-27")
+stopifnot(all(wday(c(input_start, input_end), label = TRUE) == "Sat"))
+input_dates <- seq(from = input_start, to = input_end, by = "week")
+input_seasons <- date_to_season(input_dates)
+aligned_dates <- align_weeks(input_dates, target_season = 2020)
+
+data <- data.frame(
+  input_date = input_dates,
+  input_season = input_seasons,
+  aligned_date = aligned_dates
+)
+
+data |>
+  tidyr::pivot_wider(names_from = input_season, values_from = input_date) |>
+  knitr::kable()
+```
