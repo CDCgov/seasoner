@@ -6,9 +6,9 @@ repos:
       - id: check-yaml
       - id: check-toml
       - id: end-of-file-fixer
+        exclude: NAMESPACE
       - id: mixed-line-ending
       - id: trailing-whitespace
-        exclude: NAMESPACE
   - repo: https://github.com/lorenzwalthert/precommit
     rev: v0.4.2
     hooks:
