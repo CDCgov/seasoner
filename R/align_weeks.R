@@ -1,3 +1,6 @@
+#' Align weeks across seasons
+#' @return vector of dates, of same length as `x`
+#' @export
 align_weeks <- function(
     x,
     target_season,
@@ -6,6 +9,11 @@ align_weeks <- function(
     season_start_month = 7,
     season_start_day = 1,
     week_day = 6) {
+  validate_lengths(
+    x, target_season, ref_month, ref_day, season_start_month, season_start_day
+  )
+  stopifnot(rlang::is_integerish(week_day, n = 1))
+
   # assign each input date to a season
   seasons <- get_season(
     x,
@@ -57,6 +65,8 @@ align_weeks <- function(
 #'
 #' @return integer seasons (indicating first year of two-year season)
 date_to_season <- function(x, start_month, start_day) {
+  validate_lengths(x, start_month, start_day)
+
   before_season_start <- (
     (lubridate::month(x) < start_month) |
       ((lubridate::month(x) == start_month) & (lubridate::day(x) < start_day))
@@ -76,7 +86,12 @@ date_to_season <- function(x, start_month, start_day) {
 #' @param ref_day Calendar day of reference dates
 #'
 #' @return vector of dates
-ref_date_in_season <- function(season, season_start_month, season_start_day, ref_month, ref_day) {
+ref_date_in_season <- function(
+    season, season_start_month, season_start_day, ref_month, ref_day) {
+  validate_lengths(
+    season, season_start_month, season_start_day, ref_month, ref_day
+  )
+
   before_season_start <- (
     (ref_month < season_start_month) |
       ((ref_month == season_start_month) & (ref_day < season_start_day))
