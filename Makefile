@@ -1,2 +1,7 @@
+RE = R --vanilla --quiet -e
+
 test:
-	R --vanilla --quiet -e "devtools::test()"
+	$(RE) "devtools::test()"
+
+docs:
+	$(RE) "devtools::document()"

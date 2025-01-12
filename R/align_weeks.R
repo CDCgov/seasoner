@@ -42,6 +42,20 @@ align_weeks <- function(
   x + lubridate::weeks(offset_weeks)
 }
 
+#' Get the two-year season belong to a particular date
+#'
+#' Seasons are 1-year (i.e., 365 or 366) days periods beginning on some
+#' month and day. Typically, seasons are denoted by two years. E.g.,
+#' January 1, 2020 is in the 2019/2020 season.
+#'
+#' In this codebase, a "season" is encoded by a single number, which is
+#' the first year of the two-year season.
+#'
+#' @param x dates
+#' @param start_month integer month of the season start (1=January)
+#' @param start_day integer day of the season start
+#'
+#' @return integer seasons (indicating first year of two-year season)
 date_to_season <- function(x, start_month, start_day) {
   before_season_start <- (
     lubridate::month(x) < start_month |
