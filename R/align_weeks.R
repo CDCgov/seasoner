@@ -16,7 +16,12 @@ align_weeks <- function(
   validate_lengths(
     x, target_season, ref_month, ref_day, season_start_month, season_start_day
   )
+
+  # check that input dates are on teh week day in question
   stopifnot(rlang::is_integerish(week_day, n = 1))
+  if (!all(lubridate::wday(x, week_start = 1) == week_day)) {
+    stop("Input dates must be on the specified week day")
+  }
 
   # assign each input date to a season
   seasons <- date_to_season(
@@ -26,10 +31,12 @@ align_weeks <- function(
   )
 
   # each season has a reference date
-  ref_dates <- date_to_season(
+  ref_dates <- ref_date_in_season(
     seasons,
-    start_day = season_start_day,
-    start_month = season_start_month
+    season_start_month = season_start_month,
+    season_start_day = season_start_day,
+    ref_month = ref_month,
+    ref_day = ref_day
   )
   target_ref_date <- ref_date_in_season(
     target_season,

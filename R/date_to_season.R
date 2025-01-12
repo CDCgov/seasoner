@@ -45,7 +45,5 @@ ref_date_in_season <- function(
       ((ref_month == season_start_month) & (ref_day < season_start_day))
   )
 
-
-
-  ISOdate(season + before_season_start, ref_month, ref_day)
+  as.Date(ISOdate(season + before_season_start, ref_month, ref_day))
 }
