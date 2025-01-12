@@ -9,7 +9,6 @@ repos:
         exclude: NAMESPACE
       - id: mixed-line-ending
       - id: trailing-whitespace
-        exclude: NAMESPACE
   - repo: https://github.com/lorenzwalthert/precommit
     rev: v0.4.3.9003
     hooks:
