@@ -82,13 +82,9 @@ The algorithm for week alignment is:
 2. Find the *reference date* in the input season and the *target season* (i.e.,
   the season to be aligned to). The default in this package is to use January 1
   as the reference date.
-3. Find the *reference week date* in the input season and the target season.
-  The default in this package is to use week-ending Saturdays as the week date.
-  For example, the reference date for the 2020/2021 season is Friday, January 1,
-  2021, and the reference week date is Saturday, January 2, 2021.
-4. Calculate the number of weeks between the input reference week date and The
-  target reference week date. This is the *week offset*.
-5. Offset the input date by the week offset to get the aligned date.
+3. Calculate the optimal number of days between the input reference date and the
+  target reference date. Round this to the nearest 7 to get the *week offset*.
+4. Offset the input date by the week offset to get the aligned date.
 
 # Demonstration
 
