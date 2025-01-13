@@ -82,13 +82,9 @@ The algorithm for week alignment is:
 2. Find the *reference date* in the input season and the *target season* (i.e.,
   the season to be aligned to). The default in this package is to use January 1
   as the reference date.
-3. Find the *reference week date* in the input season and the target season.
-  The default in this package is to use week-ending Saturdays as the week date.
-  For example, the reference date for the 2020/2021 season is Friday, January 1,
-  2021, and the reference week date is Saturday, January 2, 2021.
-4. Calculate the number of weeks between the input reference week date and The
-  target reference week date. This is the *week offset*.
-5. Offset the input date by the week offset to get the aligned date.
+3. Calculate the optimal number of days between the input reference date and the
+  target reference date. Round this to the nearest 7 to get the *week offset*.
+4. Offset the input date by the week offset to get the aligned date.
 
 # Demonstration
 
@@ -148,7 +144,7 @@ In two adjacent years, the same month and day of month cannot be better aligned 
 
 ## Some weeks align to dates outside the target season
 
-In some cases, a week in one season, when aligned to the target season, actually aligns to a date outside the target season. For example, the first row's aligned date (June 27, 2020) is not strictly in the 2020/2021 season.
+In some cases, a week in one season, when aligned to the target season, actually aligns to a date outside the target season. For example, the last row's aligned date (July 7, 2021) is actually outside the 2020/2021 season.
 
 This is unavoidable because a 53-week season cannot align to dates inside a 52-week season. Note that 2011/2012 and 2017/2018 are 53-week seasons, while 2020/2021 is a 52-week season.
 
@@ -157,5 +153,3 @@ seq(from = as.Date("2010-07-03"), to = as.Date("2020-06-27"), by = "week") |>
   date_to_season() |>
   table()
 ```
-
-For example, the last date in the 2011/2012 season (June 30, 2012) clearly aligns to the last date in the 2020/2021 season (June 26, 2021), but this implies that the second week of the 2011/2012 season (July 7, 2011) align to the first week of the 2020/2021 season (July 4, 2020), and therefore the first week of the 2011/2012 season (July 2, 2011) aligns to the week before that, which is actually last week of the 2019/2020 season (June 27, 2020). The same is true for the 2017/2018 season.
