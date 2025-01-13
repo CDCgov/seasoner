@@ -4,7 +4,7 @@
 \alias{date_to_season}
 \title{Get the two-year season belong to a particular date}
 \usage{
-date_to_season(x, start_month, start_day)
+date_to_season(x, start_month = 7, start_day = 1)
 }
 \arguments{
 \item{x}{dates}

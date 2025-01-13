@@ -13,6 +13,7 @@ Imports:
     methods,
     rlang
 Suggests:
+    dplyr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),

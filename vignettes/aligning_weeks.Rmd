@@ -15,25 +15,147 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(lubridate)
 library(seasoner)
 ```
 
-```{r}
-input_start <- as.Date("2010-08-07")
+# Rationale
+
+## Why "align" weeks?
+
+Lots of CDC data is reported by week. We often want to compare different years or disease seasons to each other.
+
+## Why not just use MMWR weeks?
+
+Epidemiologists often index dates as "MMWR weeks" (or "epiweeks"). An MMWR starts on Sunday and ends on Saturday. (The ISO week starts on Monday but runs into the same problems that MMWR weeks do.)
+
+An MMWR week is associated with:
+
+- a week-starting Sunday, which is an exact calendar date (e.g., MMWR year 2023 week 1 starts on Sunday, January 1, 2023),
+- a week-ending Saturday, which is an exact calendar date (e.g., MMWR year 2023 week 1 ends on Saturday, January 7, 2023),
+- an epi year (e.g., the week ending January 7, 2023 is considered part of MMWR year 2023), and
+- an epi week within the year (e.g., the week ending January 7, 2023 is considered MMWR year 2023 week 1).
+
+MMWR weeks are confusing:
+
+- Because a calendar year is greater than 52 weeks, some epi years have 52 epi weeks and some have 53 epi weeks.
+- MMWR years don't align to calendar years. For example, MMWR year 2020 week 1 starts on Sunday, December 29, 2019.
+
+Thus, naively plotting multiple seasons of winter data is confusing, because in some seasons week 52 aligns to week 52, but in other years it aligns to week 53.
+
+Note that these problems would also occur with ISO weeks.
+
+## Why stick to weeks?
+
+Weeks are easy and sensible units. A week is exactly 7 days, containing one of each day of the week. Weeks continue unbroken in time. If you start on a Saturday and go forward or back an integer multiple of 7 days, you end up on a Saturday.
+
+By contrast, years and months are difficult and fickle units. A year is 365 or 366 days, which is 52 weeks plus 1 or 2 days. This means years are non-obvious to add and subtract:
+
+- Easy: 1 Jan 2020 + one year = 1 Jan 2021
+- Unclear: 29 Feb 2020 + one year ≠ 29 Feb 2021, which is not a date
+
+Months are 28 to 31 days, so 1 month is 4 weeks plus 0 to 3 extra days. This means months are non-obvious to add and subtract:
+
+- Easy: Jan 1 + one month = Feb 1
+- Easy: Feb 1 - one month = Jan 1
+- Unclear: Jan 31 + one month = Feb 28? (or 29?, depending on the year)
+- Very unclear: Feb 28 - one month = Jan 28?, or Jan 31?
+
+## Aligning weeks across seasons
+
+**Thesis 1: There is no perfect way to align weeks between years.** For example, the week ending Saturday, February 29, 2020 could align equally well with two weeks in the 2022/2023 season: the week ending February 25, 2023 or the week ending March 4, 2023.
+
+**Thesis 2: It is best to align by moving whole weeks**, so that reference dates across seasons align. We are primarily interested in effects caused by human behavior and secondarily in reporting artifacts. Both of these effects are related to holidays, especially Thanksgiving, Christmas, and New Years, two of which are fixed holidays (i.e., that fall on the same day of the year every year).
+
+**Thesis 3: It is easiest to just work in dates**, and transpose all past data onto dates for the target season. If we do not use dates, we need to index weeks, which gets back to the troubles of the MMWR week.
+
+The method below is based on these theses.
+
+# Method
+
+The algorithm for week alignment is:
+
+1. Assign the input date (to be aligned) to a *season*. A season is a period,
+  of 1 year's duration, that starts on some month and day. The default in this
+  package is to start seasons on July 1. Thus, August 1, 2020 is near the start
+  of the 2020/2021 season, while June 1, 2020 is near the end of the 2019/2020
+  season.
+2. Find the *reference date* in the input season and the *target season* (i.e.,
+  the season to be aligned to). The default in this package is to use January 1
+  as the reference date.
+3. Find the *reference week date* in the input season and the target season.
+  The default in this package is to use week-ending Saturdays as the week date.
+  For example, the reference date for the 2020/2021 season is Friday, January 1,
+  2021, and the reference week date is Saturday, January 2, 2021.
+4. Calculate the number of weeks between the input reference week date and The
+  target reference week date. This is the *week offset*.
+5. Offset the input date by the week offset to get the aligned date.
+
+# Demonstration
+
+To show how alignment across seasons works, we create a sequence of weeks that
+span multiple seasons. Assuming (as the code's default settings do) that each season starts on
+July 1 and weeks end on Saturdays, make the sequence of Saturdays starting from
+the first Saturday of the 2010/2011 season and ending on the last Saturday of
+the 2019/2020 season.
+
+```{r inputs}
+# make a sequence of Saturdays, from 2010/2011 to 2019/2020 seasons
+input_start <- as.Date("2010-07-03")
 input_end <- as.Date("2020-06-27")
-stopifnot(all(wday(c(input_start, input_end), label = TRUE) == "Sat"))
+stopifnot(all(
+  lubridate::wday(c(input_start, input_end), label = TRUE) == "Sat"
+))
 input_dates <- seq(from = input_start, to = input_end, by = "week")
 input_seasons <- date_to_season(input_dates)
+```
+
+Then, align all of those weeks to the 2020/2021 season. (Note that seasons are
+indexed by their first year, so that `"2020"` means the 2020/2021 season.)
+
+```{r align}
+# map all of those onto the 2020/2021 season
 aligned_dates <- align_weeks(input_dates, target_season = 2020)
 
+# combine the information
 data <- data.frame(
   input_date = input_dates,
   input_season = input_seasons,
   aligned_date = aligned_dates
 )
 
+head(data)
+```
+
+This table shows the mapping from every input date, which is in some season,
+to the corresponding date in the 2020/2021 season.
+
+To show the alignment more visually, this table as the 2020/2021 date in the
+first column and the input dates in the different input seasons in the other
+columns.
+
+```{r table}
 data |>
   tidyr::pivot_wider(names_from = input_season, values_from = input_date) |>
+  dplyr::arrange(aligned_date) |>
   knitr::kable()
 ```
+
+# Discussion
+
+## Adjacent seasons are always 52 weeks apart
+
+In two adjacent years, the same month and day of month cannot be better aligned as 53 weeks apart. For example, July 6, 2019 (top-right of the table) aligns to July 4, 2020 (top-left).
+
+## Some weeks align to dates outside the target season
+
+In some cases, a week in one season, when aligned to the target season, actually aligns to a date outside the target season. For example, the first row's aligned date (June 27, 2020) is not strictly in the 2020/2021 season.
+
+This is unavoidable because a 53-week season cannot align to dates inside a 52-week season. Note that 2011/2012 and 2017/2018 are 53-week seasons, while 2020/2021 is a 52-week season.
+
+```{r season_lengths}
+seq(from = as.Date("2010-07-03"), to = as.Date("2020-06-27"), by = "week") |>
+  date_to_season() |>
+  table()
+```
+
+For example, the last date in the 2011/2012 season (June 30, 2012) clearly aligns to the last date in the 2020/2021 season (June 26, 2021), but this implies that the second week of the 2011/2012 season (July 7, 2011) align to the first week of the 2020/2021 season (July 4, 2020), and therefore the first week of the 2011/2012 season (July 2, 2011) aligns to the week before that, which is actually last week of the 2019/2020 season (June 27, 2020). The same is true for the 2017/2018 season.
