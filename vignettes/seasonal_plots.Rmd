@@ -43,3 +43,5 @@ seasoner::respnet |>
   geom_line() +
   theme_classic()
 ```
+
+Note that, as discussed in the aligning weeks vignette, that 2022/2023 and 2023/2024, when aligned to 2024/2025 have a first date that aligns to a day actually before the start of the 2024/2025 season. Visually, this is not particularly distracting.
