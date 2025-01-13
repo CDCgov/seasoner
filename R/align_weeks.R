@@ -58,8 +58,8 @@ align_weeks <- function(
   target_ref_week_date <- week_ceiling(target_ref_date)
 
   # optimal number of weeks to offset each season
-  offset_days <- (target_ref_week_date - ref_week_dates) / lubridate::ddays(1)
-  offset_weeks <- round(offset_days / 7)
+  offset_weeks <- (target_ref_week_date - ref_week_dates) / lubridate::dweeks(1)
+  stopifnot(rlang::is_integerish(offset_weeks))
 
   # move each input date by the offset weeks
   x + lubridate::weeks(offset_weeks)
