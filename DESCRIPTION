@@ -14,6 +14,7 @@ Imports:
     rlang
 Suggests:
     dplyr,
+    ggplot2,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),

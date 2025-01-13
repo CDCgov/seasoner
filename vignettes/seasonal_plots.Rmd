@@ -1,0 +1,45 @@
+---
+title: "Seasonal data plots"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Seasonal data plots}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(seasoner)
+library(ggplot2)
+```
+
+We use the `respnet` data in this package, which includes weekly hospitalization rates for COVID-19, influenza, and RSV from the [RESP-NET](https://www.cdc.gov/resp-net/dashboard/index.html) surveillance system. First, visualize the data through time, coloring by network.
+
+```{r}
+seasoner::respnet |>
+  ggplot(aes(week_ending, rate, color = network)) +
+  geom_line() +
+  theme_classic()
+```
+
+Then, align dates to the 2024/2025 season. Color by season, and facet by network.
+
+```{r}
+seasoner::respnet |>
+  dplyr::mutate(
+    week_ending_align = align_weeks(week_ending, 2024),
+    season = date_to_season(week_ending),
+    season_label = paste0(season, "/", season + 1)
+  ) |>
+  ggplot(aes(week_ending_align, rate, color = season_label)) +
+  facet_grid(rows = vars(network), scales = "free_y") +
+  geom_point() +
+  geom_line() +
+  theme_classic()
+```
